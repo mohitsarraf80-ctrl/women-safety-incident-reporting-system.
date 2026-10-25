@@ -1,0 +1,67 @@
+# ----------------------------------------------------------------
+# Java / Maven
+# ----------------------------------------------------------------
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.log
+hs_err_pid*
+replay_pid*
+
+# ----------------------------------------------------------------
+# Node / React
+# ----------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ----------------------------------------------------------------
+# Environment & secrets
+# ----------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ----------------------------------------------------------------
+# Runtime data (evidence files, local database, screenshots)
+# ----------------------------------------------------------------
+backend/data/
+data/
+screenshots/
+*.png.part
+PUBLIC-LINK.txt
+*.zip
+
+# ----------------------------------------------------------------
+# IDE / OS
+# ----------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----------------------------------------------------------------
+# Maven / build tooling caches kept inside the repo by mistake
+# ----------------------------------------------------------------
+tools/
+tools/downloads/
+tools/m2repository/
+tools/npm-cache/
+tools/mysql-data/
+tools/chrome-profile/
+tools/*.jar
+tools/NetTest.*

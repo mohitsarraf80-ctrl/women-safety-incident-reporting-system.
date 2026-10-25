@@ -1,0 +1,22 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.format.settings.profile": "GoogleStyle",
+  "files.exclude": {
+    "**/target": true,
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/target": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/package-lock.json": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "editor.formatOnSave": false,
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
+}

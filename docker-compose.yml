@@ -1,0 +1,33 @@
+# Optional MySQL 8 service for the Women Safety platform.
+# Docker is NOT required: a normal local MySQL 8 installation works just as well.
+#
+#   docker compose up -d
+#   docker compose logs -f mysql
+#
+# Then set DB_URL=jdbc:mysql://localhost:3306/women_safety?... in backend/.env
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: women-safety-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: women_safety
+      MYSQL_USER: ws_user
+      MYSQL_PASSWORD: change-me
+      MYSQL_ROOT_PASSWORD: change-root-password
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - women-safety-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "ws_user", "-pchange-me"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  women-safety-mysql-data:

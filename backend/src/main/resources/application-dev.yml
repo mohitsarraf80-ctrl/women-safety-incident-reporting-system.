@@ -1,0 +1,12 @@
+# Development profile: creates the clearly-labelled fictional demo dataset on startup.
+# Never activate this profile in a real deployment.
+
+app:
+  demo:
+    seed-enabled: true
+
+logging:
+  level:
+    com.womensafety: INFO
+    org.flywaydb: INFO
+    org.hibernate.SQL: WARN

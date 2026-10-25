@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Backend (Spring Boot)",
+      "request": "launch",
+      "mainClass": "com.womensafety.WomenSafetyApplication",
+      "projectName": "women-safety-backend",
+      "cwd": "${workspaceFolder}/backend",
+      "console": "internalConsole"
+    },
+    {
+      "type": "chrome",
+      "name": "Frontend (Chrome)",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend/src"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Women Safety: Full Stack",
+      "configurations": ["Backend (Spring Boot)", "Frontend (Chrome)"],
+      "preLaunchTask": "Women Safety: Start MySQL",
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Women Safety: Start MySQL",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\start-mysql.ps1"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always",
+        "clear": true
+      }
+    },
+    {
+      "label": "Women Safety: Start Backend",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\run-backend.ps1"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always",
+        "clear": true
+      }
+    },
+    {
+      "label": "Women Safety: Start Frontend",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\run-frontend.ps1"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always",
+        "clear": true
+      }
+    },
+    {
+      "label": "Women Safety: Start Dev Stack",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "Women Safety: Start MySQL",
+        "Women Safety: Start Backend",
+        "Women Safety: Start Frontend"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Women Safety: Run Backend Tests",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\run-backend-tests.ps1"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always",
+        "clear": true
+      }
+    },
+    {
+      "label": "Women Safety: Build Frontend",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": { "cwd": "${workspaceFolder}\\frontend" },
+      "problemMatcher": []
+    }
+  ]
+}

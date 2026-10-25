@@ -1,0 +1,48 @@
+{
+  "name": "women-safety-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "React frontend for the Women Safety Incident Reporting Platform (NIET PBL)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --configLoader native",
+    "build": "tsc --noEmit && vite build --configLoader native",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "preview": "vite preview --configLoader native --port 4173",
+    "serve": "node server/serve-dist.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "3.9",
+    "axios": "^1.20.0",
+    "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.61.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.91.0",
+    "react-is": "^19.3.1",
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.18.4",
+    "recharts": "^3.10.1",
+    "zod": "3.25"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/leaflet": "^1.9.22",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.6.1",
+    "jsdom": "^29.1.1",
+    "postcss": "^8.5.31",
+    "tailwindcss": "3.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}

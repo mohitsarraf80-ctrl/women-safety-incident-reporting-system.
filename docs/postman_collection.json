@@ -1,0 +1,432 @@
+{
+  "info": {
+    "name": "Women Safety Incident Reporting Platform",
+    "description": "PBL prototype API. Import, run 'Auth / Login (admin)', then use the other requests. Collection variables are filled automatically by test scripts where possible.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" },
+    { "key": "reportId", "value": "" },
+    { "key": "trackingCode", "value": "" },
+    { "key": "incidentId", "value": "" },
+    { "key": "responderId", "value": "" }
+  ],
+  "auth": { "type": "noauth" },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('token', body.token);",
+                  "pm.test('admin role', () => pm.expect(body.user.role).to.eql('ADMIN'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@demo.local\",\n  \"password\": \"Demo@12345\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login (responder)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"responder@demo.local\",\n  \"password\": \"Demo@12345\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Register citizen",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Postman Citizen\",\n  \"email\": \"postman.citizen@test.local\",\n  \"password\": \"StrongPass123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Logout (revokes token)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Incidents",
+      "item": [
+        {
+          "name": "Submit anonymous report",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('reportId', body.reportId);",
+                  "pm.collectionVariables.set('trackingCode', body.trackingCode);",
+                  "pm.test('report id format', () => pm.expect(body.reportId).to.match(/^WS-[A-Z0-9]{8}$/));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"STALKING\",\n  \"description\": \"Postman demonstration report: a person followed me from the metro station towards the market and would not leave.\",\n  \"occurredAt\": \"2026-10-24T17:00:00Z\",\n  \"zoneName\": \"Sector 62 Metro Station\",\n  \"latitude\": 28.6205,\n  \"longitude\": 77.37,\n  \"anonymous\": true,\n  \"requiresImmediateAssistance\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/incidents", "host": ["{{baseUrl}}"], "path": ["incidents"] }
+          }
+        },
+        {
+          "name": "Submit identified report",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"VERBAL_HARASSMENT\",\n  \"description\": \"Postman demonstration report: repeated inappropriate comments near the market entrance.\",\n  \"occurredAt\": \"2026-10-23T14:00:00Z\",\n  \"zoneName\": \"Sector 18 Market\",\n  \"anonymous\": false,\n  \"contactPhone\": \"+919000000000\",\n  \"requiresImmediateAssistance\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/incidents", "host": ["{{baseUrl}}"], "path": ["incidents"] }
+          }
+        },
+        {
+          "name": "My reports",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/incidents/my", "host": ["{{baseUrl}}"], "path": ["incidents", "my"] }
+          }
+        },
+        {
+          "name": "Track report",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reportId\": \"{{reportId}}\",\n  \"trackingCode\": \"{{trackingCode}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/reports/track", "host": ["{{baseUrl}}"], "path": ["reports", "track"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SOS",
+      "item": [
+        {
+          "name": "Activate SOS",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 28.6205,\n  \"longitude\": 77.37,\n  \"zoneName\": \"Sector 62 Metro Station\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/sos", "host": ["{{baseUrl}}"], "path": ["sos"] }
+          }
+        },
+        {
+          "name": "SOS status (tracking code header)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tracking-Code", "value": "{{trackingCode}}" }],
+            "url": { "raw": "{{baseUrl}}/sos/{{reportId}}", "host": ["{{baseUrl}}"], "path": ["sos", "{{reportId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dashboard summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Incident queue (filtered)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.content && body.content.length > 0) { pm.collectionVariables.set('incidentId', body.content[0].id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/incidents?priority=HIGH&sort=severity&direction=desc&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "incidents"],
+              "query": [
+                { "key": "priority", "value": "HIGH" },
+                { "key": "sort", "value": "severity" },
+                { "key": "direction", "value": "desc" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Incident detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/incidents/{{incidentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "incidents", "{{incidentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"UNDER_REVIEW\",\n  \"note\": \"Picked up by the duty officer.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/incidents/{{incidentId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "incidents", "{{incidentId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Assign responder",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"responderId\": {{responderId}}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/admin/incidents/{{incidentId}}/assign",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "incidents", "{{incidentId}}", "assign"]
+            }
+          }
+        },
+        {
+          "name": "Escalate to CRITICAL",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Caller reported an ongoing threat.\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/admin/incidents/{{incidentId}}/escalate",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "incidents", "{{incidentId}}", "escalate"]
+            }
+          }
+        },
+        {
+          "name": "Responders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.length > 0) { pm.collectionVariables.set('responderId', body[0].id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/responders", "host": ["{{baseUrl}}"], "path": ["admin", "responders"] }
+          }
+        },
+        {
+          "name": "Alerts",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/alerts?size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "alerts"],
+              "query": [{ "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Hotspot analysis",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/hotspots?days=30",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "hotspots"],
+              "query": [{ "key": "days", "value": "30" }]
+            }
+          }
+        },
+        {
+          "name": "Hotspot map",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/hotspots/map?days=30",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "hotspots", "map"],
+              "query": [{ "key": "days", "value": "30" }]
+            }
+          }
+        },
+        {
+          "name": "Analytics overview",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Analytics charts",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics/incidents",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics", "incidents"]
+            }
+          }
+        },
+        {
+          "name": "CSV export",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics/export.csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics", "export.csv"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Responder",
+      "item": [
+        {
+          "name": "Assigned cases",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/responder/incidents",
+              "host": ["{{baseUrl}}"],
+              "path": ["responder", "incidents"]
+            }
+          }
+        },
+        {
+          "name": "Responder profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/responder/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["responder", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update assigned case status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"note\": \"Responder en route.\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/responder/incidents/{{incidentId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["responder", "incidents", "{{incidentId}}", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
